@@ -1,0 +1,35 @@
+apiVersion: kaptain.org/1.13
+kind: kubernetes-bundle-resources
+
+spec:
+  global:
+    projectName:
+      stripRepositoryNamePrefix: test
+    configSubPath: config
+    tokens:
+      delimiterStyle: shell
+      nameStyle: lower-kebab
+      nameValidation: ALL
+      valueTrailingNewline: preserve-all
+    release:
+      versioning:
+        strategy: compound-file-pattern-match
+        patternType: dockerfile-env-kubectl
+        maxParts: 4
+        source:
+          subPath: src/docker
+          fileName: Dockerfile
+          prefixParts: 2
+        sourceTwo:
+          subPath: .
+          fileName: PATCH_VERSION
+          pattern: '^([0-9]+)$'
+          prefixParts: 1
+  main:
+    hooks:
+      preBuild: test-hooks/pre-build.bash
+      preTaggingTests: test-hooks/pre-tagging-tests.bash
+      postVersionsAndNaming: test-hooks/post-versions-and-naming.bash
+      prePackagePrepare: test-hooks/pre-package-prepare.bash
+      postPackageTests: test-hooks/post-package-tests.bash
+      postBuild: test-hooks/post-build.bash
