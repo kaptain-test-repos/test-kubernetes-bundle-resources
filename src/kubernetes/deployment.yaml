@@ -20,3 +20,8 @@ spec:
           command: ["sleep", "infinity"]
           ports:
             - containerPort: 8080
+          env:
+            - name: SHARED_CONFIG_MAP
+              value: ${shared-config-map-name}
+            - name: EXTERNAL_NAMESPACE
+              value: ${external-target-namespace}
